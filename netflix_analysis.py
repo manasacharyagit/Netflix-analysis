@@ -27,13 +27,14 @@ all_genres = sorted(
     set(g.strip() for sublist in df['Genre'].dropna().str.split(',') for g in sublist)
 )
 
-def filter_by_genre(selected_genre):
-    return df[df['Genre'].str.contains(selected_genre, case=False, na=False)]
+
 selected_genre = st.selectbox("🎬 Select Genre", ["All"]+all_genres)
 if selected_genre =="All":
     filtered_df = df
 else:
-     filtered_df = df[df['Genre'].str.contains(selected_genre,  case=False, na=False)]
+    filtered_df = df[df['Genre'].apply(
+        lambda x: any(g.strip().lower() == selected_genre.strip().lower() for g in str(x).split(','))
+    )]
 if search:
     filtered_df = filtered_df[filtered_df['Title'].str.contains(search, case=False, na=False)]
      
